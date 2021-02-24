@@ -9,6 +9,9 @@ A set HA of manifests are provided for users who wish to run Argo CD in a highly
 !!! note
     The HA installation will require at least three different nodes due to pod anti-affinity roles in the specs.
 
+!!! note Redis service name is changed
+    The HA manifests install the redis service as `argocd-redis-ha`. If you have overlays which include the command for `argocd-server`, you'll need to add `--redis argocd-redis-ha:6379`
+
 ## Scaling Up
 
 ### argocd-repo-server
@@ -102,10 +105,13 @@ The `argocd-server` is stateless and probably least likely to cause issues. You 
 
 * The `ARGOCD_GRPC_MAX_SIZE_MB` environment variable allows specifying the max size of the server response message in megabytes.
 The default value is 200. You might need to increase for an Argo CD instance that manages 3000+ applications.    
+### argocd-dex-server
 
-### argocd-dex-server, argocd-redis
+The `argocd-dex-server` uses an in-memory database, and two or more instances would have inconsistent data.
 
-The `argocd-dex-server` uses an in-memory database, and two or more instances would have inconsistent data. `argocd-redis` is pre-configured with the understanding of only three total redis servers/sentinels.
+### argocd-redis
+
+`argocd-redis` is renamed to `argocd-redis-ha`, and pre-configured with the understanding of only three total redis servers/sentinels.
 
 ## Monorepo Scaling Considerations
 
